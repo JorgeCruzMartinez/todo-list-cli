@@ -18,7 +18,7 @@ Una aplicación de consola moderna, interactiva y robusta para la gestión de ta
 *   **Lenguaje:** C# 12
 *   **Framework:** .NET 8.0 SDK
 *   **Librerías de Terceros:**
-    *   [Spectre.Console](https://spectreconsole.net) - Para el diseño visual, tablas y prompts interactivos en la terminal.
+    *   [Spectre.Console] (https://spectreconsole.net) - Para el diseño visual, tablas y prompts interactivos en la terminal.
 
 ---
 
