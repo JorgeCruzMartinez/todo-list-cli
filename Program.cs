@@ -1,5 +1,6 @@
-﻿using Todo_List;
-using Spectre.Console;
+﻿using Spectre.Console;
+using System.Runtime.InteropServices;
+using Todo_List;
 
 class Program
 {
@@ -85,14 +86,14 @@ class Program
         var tasks = _manager.GetAllTasks();
         if (!tasks.Any()) return;
 
-        // Convertidor directo en una sola línea sin escapar cadenas
+        // Se utiliza Markup.Escape para evitar conflictos con los corchetes del ID en Spectre.Console
         var prompt = new SelectionPrompt<TaskItem>()
-            .Title("Selecciona la tarea para cambiar su estado:")
-            .UseConverter(t => $"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})");
+              .Title("Selecciona la tarea para cambiar su estado:")
+              .UseConverter (t => Markup.Escape($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
 
         prompt.AddChoices(tasks);
 
-        var selectedTask = AnsiConsole.Prompt(prompt);
-        _manager.ToggleTaskStatus(selectedTask.Id);
+        var selectedTask = AnsiConsole.Prompt (prompt);
+        _manager.ToggleTaskStatus (selectedTask.Id);
     }
 }
