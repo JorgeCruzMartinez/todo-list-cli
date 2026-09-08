@@ -43,12 +43,12 @@ namespace Todo_List
             try
             {
                 var options = new JsonSerializerOptions { WriteIndented = true };
-                string jsonString = JsonSerializer.Serialize(_tasks, options);
-                File.WriteAllText(filePath, jsonString);
+                string jsonString = JsonSerializer.Serialize (_tasks, options);
+                File.WriteAllText (filePath, jsonString);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al guardar: {ex.Message}");
+                Console.WriteLine ($"Error al guardar: {ex.Message}");
             }
         }
 
@@ -71,14 +71,23 @@ namespace Todo_List
                 _nextId = 1;
             }
         }
-
         public void DeleteTask(int id)
         {
             var task = _tasks.FirstOrDefault (t => t.Id == id);
             if (task != null)
             {
                 _tasks.Remove(task);
-                SaveTasksToFile(); // Guardamos los cambios inmediatamente en el archivo JSON
+                SaveTasksToFile();
+            }
+        }
+
+        public void UpdateTaskTitle(int id, string newTitle) 
+        {
+            var task = _tasks.FirstOrDefault (t => t.Id == id);
+            if (task != null)
+            {  
+                task.Title = newTitle;
+                SaveTasksToFile();
             }
         }
     }

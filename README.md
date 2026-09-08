@@ -46,14 +46,15 @@ Sigue estos pasos para clonar y ejecutar el proyecto localmente:
 
 ## 📂 Estructura del Código
 
-*   `Program.cs`: Controla el flujo principal de la aplicación y renderiza la interfaz visual interactiva.
-*   `TaskManager.cs`: Contiene toda la lógica de negocio, manipulación de listas mediante LINQ y la serialización/deserialización del archivo JSON.
-*   `TaskItem.cs`: Entidad pura de datos que define las propiedades de una tarea (Id, Título, Estado).
+*   "Program.cs": Controla el flujo principal de la aplicación y renderiza la interfaz visual interactiva.
+*   "TaskManager.cs"": Contiene toda la lógica de negocio, manipulación de listas mediante LINQ y la serialización/deserialización del archivo JSON.
+*   "TaskItem.cs"": Entidad pura de datos que define las propiedades de una tarea (Id, Título, Estado).
 
 ---
 
 ## 📈 Próximas Mejoras (Roadmap)
 
 - [ ] Agregar funcionalidad para eliminar tareas con confirmación del usuario.
+- [ ] Agregar funcionalidad para renombrar tareas con confirmación del usuario.
 - [ ] Implementar pruebas unitarias utilizando xUnit.
 - [ ] Migrar el almacenamiento local de JSON a una base de datos ligera con SQLite y EF Core.

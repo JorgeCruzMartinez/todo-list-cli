@@ -28,17 +28,21 @@ class Program
                 new SelectionPrompt<string>()
                     .Title ("\n[yellow]¿Qué deseas hacer?[/]")
                     .PageSize (5)
-                    .AddChoices (new[] { "Agregar Tarea", "Cambiar Estado (Completar/Pendiente)", "Eliminar Tarea",  "Salir" }));
+                    .AddChoices (new[] { "Agregar Tarea", "Cambiar Estado (Completar/Pendiente)", "Renombrar Tarea", "Eliminar Tarea",  "Salir" }));
 
             switch (option)
             {
                 case "Agregar Tarea":
-                    var title = AnsiConsole.Ask<string>("Escribe el título de la tarea:");
+                    var title = AnsiConsole.Ask<string> ("Escribe el título de la tarea:");
                     _manager.AddTask(title);
                     break;
 
                 case "Cambiar Estado (Completar/Pendiente)":
                     PromptToggleTask();
+                    break;
+
+                case "Renombrar Tarea":
+                    PromptRenameTask();
                     break;
 
                 case "Eliminar Tarea":
@@ -133,5 +137,43 @@ class Program
             AnsiConsole.MarkupLine("[grey]Operación cancelada.[/]");
 
         System.Threading.Thread.Sleep (3000);
+    }
+
+    private static void PromptRenameTask()
+    {
+        var tasks = _manager.GetAllTasks();
+        if (!tasks.Any())
+        {
+            AnsiConsole.MarkupLine ("[grey]¡¡¡¡¡ No hay tareas registradas para renombrar !!!!!.[/]");
+            Console.ReadKey();
+            return;
+        }
+
+        // Reutilizamos la lógica de selección interactiva basada en el objeto TaskItem
+        var prompt = new SelectionPrompt<TaskItem>()
+            .Title ("Selecciona la tarea que deseas [blue]RENOMBRAR[/]:");
+
+        // Aplicamos Markup.Escape para renderizar de forma segura los corchetes del ID
+        prompt.UseConverter (t => Markup.Escape ($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
+        prompt.AddChoices (tasks);
+
+        var selectedTask = AnsiConsole.Prompt (prompt);
+
+        // Solicitamos el nuevo nombre. Puedes usar el nombre actual como valor por defecto si el usuario solo quiere corregir una letra
+        var newTitle = AnsiConsole.Prompt(
+            new TextPrompt<string> ($"Escribe el nuevo título para la tarea [yellow]\"{selectedTask.Title}\"[/]:")
+                .DefaultValue(selectedTask.Title) // Si presiona Enter sin escribir, conserva el actual
+        );
+
+        // Si el usuario presionó Enter y es idéntico, cancelamos la operación para no reescribir el disco en vano
+        if (newTitle == selectedTask.Title)        
+            AnsiConsole.MarkupLine("[grey]El nombre es el mismo. Operación cancelada.[/]");
+        else
+        {
+            _manager.UpdateTaskTitle (selectedTask.Id, newTitle);
+            AnsiConsole.MarkupLine ("[green]✔ Tarea renombrada correctamente.[/]");
+        }
+
+        System.Threading.Thread.Sleep(3000);
     }
 }
