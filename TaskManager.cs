@@ -57,13 +57,13 @@ namespace Todo_List
         {
             try
             {
-                if (!File.Exists(filePath)) return;
+                if (!File.Exists (filePath)) return;
 
-                string jsonString = File.ReadAllText(filePath);
+                string jsonString = File.ReadAllText (filePath);
                 _tasks = JsonSerializer.Deserialize<List<TaskItem>>(jsonString) ?? new List<TaskItem>();
 
                 // Calcula el siguiente ID autoincremental basado en el ID más alto guardado
-                _nextId = _tasks.Any() ? _tasks.Max(t => t.Id) + 1 : 1;
+                _nextId = _tasks.Any() ? _tasks.Max (t => t.Id) + 1 : 1;
             }
             catch (Exception)
             {
@@ -72,14 +72,14 @@ namespace Todo_List
             }
         }
 
-        //public void DeleteTask(int id)
-        //{            
-        //    var task = _tasks.FirstOrDefault(t => t.Id == id);
-        //    if (task != null)
-        //    {
-        //        _tasks.Remove(task);
-        //        SaveTasksToFile(); // Guardamos los cambios inmediatamente en el archivo JSON
-        //    }
-        //}
+        public void DeleteTask(int id)
+        {
+            var task = _tasks.FirstOrDefault (t => t.Id == id);
+            if (task != null)
+            {
+                _tasks.Remove(task);
+                SaveTasksToFile(); // Guardamos los cambios inmediatamente en el archivo JSON
+            }
+        }
     }
 }
