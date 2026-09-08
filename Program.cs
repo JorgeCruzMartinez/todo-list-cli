@@ -26,9 +26,9 @@ class Program
             // string option = AnsiConsole.Prompt(
             var option = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("\n[yellow]¿Qué deseas hacer?[/]")
-                    .PageSize(5)
-                    .AddChoices(new[] { "Agregar Tarea", "Cambiar Estado (Completar/Pendiente)", "Salir" }));
+                    .Title ("\n[yellow]¿Qué deseas hacer?[/]")
+                    .PageSize (5)
+                    .AddChoices (new[] { "Agregar Tarea", "Cambiar Estado (Completar/Pendiente)", "Eliminar Tarea",  "Salir" }));
 
             switch (option)
             {
@@ -39,6 +39,10 @@ class Program
 
                 case "Cambiar Estado (Completar/Pendiente)":
                     PromptToggleTask();
+                    break;
+
+                case "Eliminar Tarea":
+                    PromptDeleteTask();
                     break;
 
                 case "Salir":
@@ -95,5 +99,39 @@ class Program
 
         var selectedTask = AnsiConsole.Prompt (prompt);
         _manager.ToggleTaskStatus (selectedTask.Id);
+    }
+
+    private static void PromptDeleteTask()
+    {
+        var tasks = _manager.GetAllTasks();
+        if (!tasks.Any())
+        {
+            AnsiConsole.MarkupLine ("[grey]¡¡¡¡¡ No hay tareas registradas para eliminar !!!!!.[/]");
+            Console.ReadKey();
+            return;
+        }
+
+        // Reutilizamos la lógica de selección interactiva basada en el objeto TaskItem
+        var prompt = new SelectionPrompt<TaskItem>()
+            .Title ("Selecciona la tarea que deseas [red]ELIMINAR[/]:");
+
+        // Aplicamos Markup.Escape para renderizar de forma segura los corchetes del ID
+        prompt.UseConverter (t => Markup.Escape($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
+        prompt.AddChoices(tasks);
+
+        var selectedTask = AnsiConsole.Prompt (prompt);
+
+        // Ventana de confirmación interactiva (S/N) para evitar accidentes
+        bool confirm = AnsiConsole.Confirm ($"¿¿¿ Estás seguro de que deseas eliminar la tarea: [yellow]\"{selectedTask.Title} ???\"[/]?");
+
+        if (confirm)
+        {
+            _manager.DeleteTask (selectedTask.Id);
+            AnsiConsole.MarkupLine ("[green]✔ Tarea eliminada correctamente.[/]");
+        }
+        else
+            AnsiConsole.MarkupLine("[grey]Operación cancelada.[/]");
+
+        System.Threading.Thread.Sleep (3000);
     }
 }
