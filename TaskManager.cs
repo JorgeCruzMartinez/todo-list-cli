@@ -5,90 +5,87 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace Todo_List
+
+namespace Todo_List;
+public class TaskManager
 {
-    public class TaskManager
+    private int _nextId = 1;
+    private const string filePath = "tasks.json";
+    private List<TaskItem> _tasks = [];
+
+    public TaskManager()
     {
-        private int _nextId = 1;
-        private const string filePath = "tasks.json";
-        private List<TaskItem> _tasks = new();
+        LoadTasksFromFile();
+    }
 
-        public TaskManager()
-        {
-            LoadTasksFromFile();
-        }
+    public void AddTask(string title)
+    {
+        _tasks.Add (new TaskItem { Id = _nextId++, Title = title });
+        SaveTasksToFile();
+    }
+    public List<TaskItem> GetAllTasks() => _tasks;
 
-        public void AddTask(string title)
+    // Cambia el estado de la tarea y guarda automáticamente
+    public void ToggleTaskStatus (int id)
+    {
+        var task = _tasks.FirstOrDefault (t => t.Id == id);
+        if (task != null)
         {
-            _tasks.Add(new TaskItem { Id = _nextId++, Title = title });
+            task.IsCompleted = !task.IsCompleted;
             SaveTasksToFile();
         }
+    }
 
-        public List<TaskItem> GetAllTasks() => _tasks;
-
-        // Cambia el estado de la tarea y guarda automáticamente
-        public void ToggleTaskStatus(int id)
+    // Serializa la lista y la guarda en el archivo JSON
+    private void SaveTasksToFile()
+    {
+        try
         {
-            var task = _tasks.FirstOrDefault(t => t.Id == id);
-            if (task != null)
-            {
-                task.IsCompleted = !task.IsCompleted;
-                SaveTasksToFile();
-            }
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string jsonString = JsonSerializer.Serialize (_tasks, options);
+            File.WriteAllText (filePath, jsonString);
         }
-
-        // Serializa la lista y la guarda en el archivo JSON
-        private void SaveTasksToFile()
+        catch (Exception ex)
         {
-            try
-            {
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                string jsonString = JsonSerializer.Serialize (_tasks, options);
-                File.WriteAllText (filePath, jsonString);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine ($"Error al guardar: {ex.Message}");
-            }
+            Console.WriteLine ($"Error al guardar: {ex.Message}");
         }
+    }
 
-        // Lee el archivo JSON y restaura el estado de las tareas
-        private void LoadTasksFromFile()
+    // Lee el archivo JSON y restaura el estado de las tareas
+    private void LoadTasksFromFile()
+    {
+        try
         {
-            try
-            {
-                if (!File.Exists (filePath)) return;
+            if (!File.Exists (filePath)) return;
 
-                string jsonString = File.ReadAllText (filePath);
-                _tasks = JsonSerializer.Deserialize<List<TaskItem>>(jsonString) ?? new List<TaskItem>();
+            string jsonString = File.ReadAllText (filePath);
+            _tasks = JsonSerializer.Deserialize<List<TaskItem>>(jsonString) ?? [];
 
-                // Calcula el siguiente ID autoincremental basado en el ID más alto guardado
-                _nextId = _tasks.Any() ? _tasks.Max (t => t.Id) + 1 : 1;
-            }
-            catch (Exception)
-            {
-                _tasks = new List<TaskItem>();
-                _nextId = 1;
-            }
+            // Calcula el siguiente ID autoincremental basado en el ID más alto guardado
+            _nextId = _tasks.Count != 0 ? _tasks.Max (t => t.Id) + 1 : 1;
         }
-        public void DeleteTask(int id)
+        catch (Exception)
         {
-            var task = _tasks.FirstOrDefault (t => t.Id == id);
-            if (task != null)
-            {
-                _tasks.Remove(task);
-                SaveTasksToFile();
-            }
+            _tasks = [];
+            _nextId = 1;
         }
-
-        public void UpdateTaskTitle(int id, string newTitle) 
+    }
+    public void DeleteTask (int id)
+    {
+        var task = _tasks.FirstOrDefault (t => t.Id == id);
+        if (task != null)
         {
-            var task = _tasks.FirstOrDefault (t => t.Id == id);
-            if (task != null)
-            {  
-                task.Title = newTitle;
-                SaveTasksToFile();
-            }
+            _tasks.Remove (task);
+            SaveTasksToFile();
+        }
+    }
+    public void UpdateTaskTitle(int id, string newTitle) 
+    {
+        var task = _tasks.FirstOrDefault (t => t.Id == id);
+        if (task != null)
+        {  
+            task.Title = newTitle;
+            SaveTasksToFile();
         }
     }
 }

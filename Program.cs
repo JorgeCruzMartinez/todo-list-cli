@@ -1,11 +1,10 @@
-﻿using Spectre.Console;
+﻿using Todo_List;
+using Spectre.Console;
 using System.Runtime.InteropServices;
-using Todo_List;
 
 class Program
 {
     private static readonly TaskManager _manager = new();
-
     static void Main(string[] args)
     {
         bool keepRunning = true;
@@ -56,21 +55,20 @@ class Program
             }
         }
     }
-
     private static void ShowTasksTable()
     {
         var tasks = _manager.GetAllTasks();
 
-        if (!tasks.Any())
+        if (tasks.Count == 0)
         {
-            AnsiConsole.MarkupLine("[grey]No hay tareas registradas.[/]");
+            AnsiConsole.MarkupLine("[grey]¡¡¡¡¡ No hay tareas registradas !!!!!.[/]");
             return;
         }
 
-        var table = new Table().Border(TableBorder.Rounded);
-        table.AddColumn("[bold]ID[/]");
-        table.AddColumn("[bold]Tarea[/]");
-        table.AddColumn("[bold]Estado[/]");
+        var table = new Table().Border (TableBorder.Rounded);
+        table.AddColumn ("[bold]ID[/]");
+        table.AddColumn ("[bold]Tarea[/]");
+        table.AddColumn ("[bold]Estado[/]");
 
         foreach (var task in tasks)
         {
@@ -86,13 +84,12 @@ class Program
             table.AddRow(task.Id.ToString(), titleStyle, status);
         }
 
-        AnsiConsole.Write(table);
+        AnsiConsole.Write (table);
     }
-
     private static void PromptToggleTask()
     {
         var tasks = _manager.GetAllTasks();
-        if (!tasks.Any()) return;
+        if (tasks.Count == 0) return;
 
         // Se utiliza Markup.Escape para evitar conflictos con los corchetes del ID en Spectre.Console
         var prompt = new SelectionPrompt<TaskItem>()
@@ -104,16 +101,11 @@ class Program
         var selectedTask = AnsiConsole.Prompt (prompt);
         _manager.ToggleTaskStatus (selectedTask.Id);
     }
-
     private static void PromptDeleteTask()
     {
         var tasks = _manager.GetAllTasks();
-        if (!tasks.Any())
-        {
-            AnsiConsole.MarkupLine ("[grey]¡¡¡¡¡ No hay tareas registradas para eliminar !!!!!.[/]");
-            Console.ReadKey();
+        if (tasks.Count == 0)       
             return;
-        }
 
         // Reutilizamos la lógica de selección interactiva basada en el objeto TaskItem
         var prompt = new SelectionPrompt<TaskItem>()
@@ -138,16 +130,15 @@ class Program
 
         System.Threading.Thread.Sleep (3000);
     }
-
     private static void PromptRenameTask()
     {
         var tasks = _manager.GetAllTasks();
-        if (!tasks.Any())
-        {
-            AnsiConsole.MarkupLine ("[grey]¡¡¡¡¡ No hay tareas registradas para renombrar !!!!!.[/]");
-            Console.ReadKey();
+        if (tasks.Count == 0)
+        //{
+        //    AnsiConsole.MarkupLine ("[grey]¡¡¡¡¡ No hay tareas registradas para renombrar !!!!!.[/]");
+        //    Console.ReadKey();
             return;
-        }
+        //}
 
         // Reutilizamos la lógica de selección interactiva basada en el objeto TaskItem
         var prompt = new SelectionPrompt<TaskItem>()
