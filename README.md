@@ -62,5 +62,7 @@ Sigue estos pasos para clonar y ejecutar el proyecto localmente:
 
 - [ ] Agregar funcionalidad para eliminar tareas con confirmación del usuario.
 - [ ] Agregar funcionalidad para renombrar tareas con confirmación del usuario.
+- [ ] Refactorización aplicando principios SOLID de forma síncrona
+- [ ] Agregar funcionalidad para persistencia asíncrona.
 - [ ] Implementar pruebas unitarias utilizando xUnit.
 - [ ] Migrar el almacenamiento local de JSON a una base de datos ligera con SQLite y EF Core.
