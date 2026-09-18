@@ -1,15 +1,12 @@
 ﻿using Todo_List;
 class Program
 {
-    static void Main (string[] args)
+    static async Task Main (string[] args)
     {
-        // 1. Instanciamos el almacén de datos (Abierto/Cerrado)
         ITaskRepository repository = new JsonTaskRepository();
+        ConsoleUserInterface ui = new ConsoleUserInterface (repository);
 
-        // 2. Inyectamos el almacén en la UI (Inversión de Dependencias)
-        ConsoleUserInterface ui = new (repository);
-
-        // 3. Arrancamos la aplicación
-        ui.Run();
+        // Ejecución asíncrona del menú principal
+        await ui.RunAsync();
     }
 }

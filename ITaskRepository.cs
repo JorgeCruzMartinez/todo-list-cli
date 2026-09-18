@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
+﻿namespace Todo_List;
 
-
-namespace Todo_List;
-public  interface ITaskRepository
+public interface ITaskRepository
 {
-    void AddTask (string title);
-    List<TaskItem> GetAllTasks();
-    void ToggleTaskStatus (int id);
-    void DeleteTask (int id);
-    void UpdateTaskTitle (int id, string newTitle);
+    Task AddTaskAsync (string title);
+    Task<List<TaskItem>> GetAllTasksAsync();
+    Task ToggleTaskStatusAsync (int id);
+    Task DeleteTaskAsync (int id);
+    Task UpdateTaskTitleAsync (int id, string newTitle);
 }
