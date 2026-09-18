@@ -1,68 +1,72 @@
-﻿using System;
-using Spectre.Console;
-using System.Threading;
+﻿using Spectre.Console;
 
 
 namespace Todo_List;
+
 public class ConsoleUserInterface
 {
     private readonly ITaskRepository _repository;
 
-    // DIP: Inyectamos la abstracción
-    public ConsoleUserInterface(ITaskRepository repository)
+    public ConsoleUserInterface (ITaskRepository repository)
     {
         _repository = repository;
     }
 
-    public void Run()
+    public async Task RunAsync()
     {
         bool keepRunning = true;
         while (keepRunning)
         {
             AnsiConsole.Clear();
-            AnsiConsole.Write (new FigletText("TODO List CLI").Centered().Color(Color.Blue));
-            ShowTasksTable();
 
-            string option = AnsiConsole.Prompt (
+            AnsiConsole.Write (
+                new FigletText ("TODO List CLI")
+                    .Centered()
+                    .Color (Color.Blue));
+
+            await ShowTasksTableAsync();
+
+            var option = AnsiConsole.Prompt (
                 new SelectionPrompt<string>()
                     .Title("\n[yellow]¿Qué deseas hacer?[/]")
-                    .PageSize(5)
-                    .AddChoices(new[] { "Agregar Tarea", "Cambiar Estado (Completar/Pendiente)", "Renombrar Tarea", "Eliminar Tarea", "Salir" }));
+                    .PageSize (5)
+                    .AddChoices (new[] { "Agregar Tarea", "Cambiar Estado (Completar/Pendiente)", "Renombrar Tarea", "Eliminar Tarea", "Salir" }));
 
             switch (option)
             {
                 case "Agregar Tarea":
                     var title = AnsiConsole.Ask<string> ("Escribe el título de la tarea:");
-                    if (!string.IsNullOrWhiteSpace(title)) _repository.AddTask (title);
+                    if (!string.IsNullOrWhiteSpace(title)) await _repository.AddTaskAsync (title);
                     break;
 
                 case "Cambiar Estado (Completar/Pendiente)":
-                    PromptToggleTask();
+                    await PromptToggleTaskAsync();
                     break;
 
                 case "Renombrar Tarea":
-                    PromptRenameTask();
+                    await PromptRenameTaskAsync();
                     break;
 
                 case "Eliminar Tarea":
-                    PromptDeleteTask();
+                    await PromptDeleteTaskAsync();
                     break;
-
+                     
                 case "Salir":
                     keepRunning = false;
                     AnsiConsole.MarkupLine ("[bold green] ¡¡¡¡ Hasta luego !!!![/]");
+                    Thread.Sleep (3000);
                     break;
             }
         }
     }
 
-    private void ShowTasksTable()
+    private async Task ShowTasksTableAsync()
     {
-        var tasks = _repository.GetAllTasks();
+        var tasks = await _repository.GetAllTasksAsync();
 
         if (tasks.Count == 0)
         {
-            AnsiConsole.MarkupLine ("[grey]¡¡¡¡¡ No hay tareas registradas !!!!!.[/]");
+            AnsiConsole.MarkupLine("[grey]¡¡¡¡¡ No hay tareas registradas !!!!!.[/]");
             return;
         }
 
@@ -75,15 +79,15 @@ public class ConsoleUserInterface
         {
             string status = task.IsCompleted ? "[green]✔ Completada[/]" : "[red]⏳ Pendiente[/]";
             string titleStyle = task.IsCompleted ? $"[strike grey]{task.Title}[/]" : task.Title;
-            table.AddRow (task.Id.ToString(), titleStyle, status);
+            table.AddRow(task.Id.ToString(), titleStyle, status);
         }
 
         AnsiConsole.Write (table);
     }
 
-    private void PromptToggleTask()
+    private async Task PromptToggleTaskAsync()
     {
-        var tasks = _repository.GetAllTasks();
+        var tasks = await _repository.GetAllTasksAsync();
         if (tasks.Count == 0) return;
 
         var prompt = new SelectionPrompt<TaskItem>()
@@ -92,58 +96,58 @@ public class ConsoleUserInterface
 
         prompt.AddChoices (tasks);
         var selectedTask = AnsiConsole.Prompt (prompt);
-        _repository.ToggleTaskStatus (selectedTask.Id);
+        await _repository.ToggleTaskStatusAsync (selectedTask.Id);
     }
 
-    private void PromptDeleteTask()
+    private async Task PromptDeleteTaskAsync()
     {
-        var tasks = _repository.GetAllTasks();
+        var tasks = await _repository.GetAllTasksAsync();
         if (tasks.Count == 0) return;
 
         var prompt = new SelectionPrompt<TaskItem>()
-            .Title ("Selecciona la tarea que deseas [red]ELIMINAR[/]:")
-            .UseConverter (t => Markup.Escape($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
+            .Title("Selecciona la tarea que deseas [red]ELIMINAR[/]:")
+            .UseConverter(t => Markup.Escape($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
 
-        prompt.AddChoices (tasks);
-        var selectedTask = AnsiConsole.Prompt (prompt);
+        prompt.AddChoices(tasks);
+        var selectedTask = AnsiConsole.Prompt(prompt);
 
-        bool confirm = AnsiConsole.Confirm ($"¿¿¿ Estás seguro de que deseas eliminar la tarea: [yellow]\"{selectedTask.Title}\" ???[/]?");
+        bool confirm = AnsiConsole.Confirm($"¿¿¿ Estás seguro de que deseas eliminar la tarea: [yellow]\"{selectedTask.Title}\" ???[/]???");
 
         if (confirm)
         {
-            _repository.DeleteTask (selectedTask.Id);
+            await _repository.DeleteTaskAsync (selectedTask.Id);
             AnsiConsole.MarkupLine ("[green]✔ Tarea eliminada correctamente.[/]");
         }
         else
             AnsiConsole.MarkupLine("[grey]Operación cancelada.[/]");
         
 
-        Thread.Sleep (3000);
+        Thread.Sleep (2000);
     }
 
-    private void PromptRenameTask()
+    private async Task PromptRenameTaskAsync()
     {
-        var tasks = _repository.GetAllTasks();
+        var tasks = await _repository.GetAllTasksAsync();
         if (tasks.Count == 0) return;
 
         var prompt = new SelectionPrompt<TaskItem>()
             .Title ("Selecciona la tarea que deseas [blue]RENOMBRAR[/]:")
             .UseConverter (t => Markup.Escape($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
 
-        prompt.AddChoices (tasks);
+        prompt.AddChoices(tasks);
         var selectedTask = AnsiConsole.Prompt (prompt);
 
-        string newTitle = AnsiConsole.Ask<string> ($"Escribe el nuevo título para [yellow]\"{selectedTask.Title}\"[/]:");
+        var newTitle = AnsiConsole.Ask<string> ($"Escribe el nuevo título para [yellow]\"{selectedTask.Title}\"[/]:");
 
         if (!string.IsNullOrWhiteSpace (newTitle))
         {
-            _repository.UpdateTaskTitle (selectedTask.Id, newTitle);
+            await _repository.UpdateTaskTitleAsync (selectedTask.Id, newTitle);
             AnsiConsole.MarkupLine ("[green]✔ Tarea renombrada correctamente.[/]");
         }
-        else
+        else        
             AnsiConsole.MarkupLine("[red]El título no puede estar vacío.[/]");
         
 
-        Thread.Sleep (3000);
+        Thread.Sleep(2000);
     }
 }

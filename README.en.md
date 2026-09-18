@@ -64,5 +64,7 @@ Follow these steps to clone and run the project locally:
 
 - [ ] Add functionality to delete tasks with user confirmation.
 - [ ] Add functionality to rename tasks with user confirmation.
+- [ ] Refactoring by applying SOLID principles synchronously
+- [ ] Add functionality for asynchronous persistence.
 - [ ] Implement unit tests using xUnit.
-- [ ] Migrate local storage from JSON to a lightweight database using SQLite and EF Core.
+- [ ] Migrate local JSON storage to a database using SQL Server and EF Core.
