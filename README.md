@@ -65,4 +65,4 @@ Sigue estos pasos para clonar y ejecutar el proyecto localmente:
 - [ ] Refactorización aplicando principios SOLID de forma síncrona
 - [ ] Agregar funcionalidad para persistencia asíncrona.
 - [ ] Implementar pruebas unitarias utilizando xUnit.
-- [ ] Migrar el almacenamiento local de JSON a una base de datos ligera con SQLite y EF Core.
+- [ ] Migrar el almacenamiento local de JSON a una base de datos con SQL Server y EF Core.

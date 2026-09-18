@@ -1,11 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-
-namespace Todo_List;
+﻿namespace Todo_List;
 public class TaskItem
 {
     public int Id { get; set; }
