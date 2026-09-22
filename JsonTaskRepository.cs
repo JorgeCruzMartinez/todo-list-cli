@@ -4,19 +4,27 @@
 namespace Todo_List;
 
 public class JsonTaskRepository : ITaskRepository
-{
+{    
     private int _nextId = 1;
-    private const string filePath = "tasks.json";
-    private List<TaskItem> _tasks = [];
+    private readonly string _filePath;
+    private List<TaskItem> _tasks = [];    
 
-    // Nota: Los constructores en C# no pueden ser asíncronos y por eso llamamos al método síncrono o inicializamos una lista vacía.
-    public JsonTaskRepository()
+
+    // 1. CONSTRUCTOR PARA PROGRAM.CS (Sin parámetros)
+    // Llama al constructor de abajo pasando la ruta por defecto de la app
+    public JsonTaskRepository() : this("tasks.json")
     {
+    }
+
+    // 2. CONSTRUCTOR PARA PRUEBAS (Con parámetro)
+    public JsonTaskRepository(string filePath)
+    {
+        _filePath = filePath; // Guarda la ruta en el campo de la clase
         try
         {
-            if (File.Exists(filePath))
+            if (File.Exists(_filePath))
             {
-                string jsonString = File.ReadAllText (filePath);
+                string jsonString = File.ReadAllText(_filePath);
                 _tasks = JsonSerializer.Deserialize<List<TaskItem>>(jsonString) ?? [];
                 _nextId = _tasks.Count != 0 ? _tasks.Max(t => t.Id) + 1 : 1;
             }
@@ -75,7 +83,7 @@ public class JsonTaskRepository : ITaskRepository
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize (_tasks, options);
-            await File.WriteAllTextAsync (filePath, jsonString); // ⏳ Operación asíncrona
+            await File.WriteAllTextAsync (_filePath, jsonString); // ⏳ Operación asíncrona
         }
         catch (Exception ex)
         {
