@@ -4,21 +4,27 @@
 namespace Todo_List;
 
 public class JsonTaskRepository : ITaskRepository
-{
+{    
     private int _nextId = 1;
-    private readonly string _filePath; // 🆕 Cambiado de 'const' a 'readonly string' para poder personalizarlo.
-    private List<TaskItem> _tasks = [];
+    private readonly string _filePath;
+    private List<TaskItem> _tasks = [];    
 
-    // 🆕 Constructor actualizado: acepta un parámetro opcional con la ruta por defecto
-    public JsonTaskRepository (string filePath = "tasks.json")
+
+    // 1. CONSTRUCTOR PARA PROGRAM.CS (Sin parámetros)
+    // Llama al constructor de abajo pasando la ruta por defecto de la app
+    public JsonTaskRepository() : this("tasks.json")
     {
-        _filePath = filePath; // Asigna la ruta recibida (la de pruebas o la oficial)
+    }
 
+    // 2. CONSTRUCTOR PARA PRUEBAS (Con parámetro)
+    public JsonTaskRepository(string filePath)
+    {
+        _filePath = filePath; // Guarda la ruta en el campo de la clase
         try
         {
             if (File.Exists(_filePath))
             {
-                string jsonString = File.ReadAllText (_filePath);
+                string jsonString = File.ReadAllText(_filePath);
                 _tasks = JsonSerializer.Deserialize<List<TaskItem>>(jsonString) ?? [];
                 _nextId = _tasks.Count != 0 ? _tasks.Max(t => t.Id) + 1 : 1;
             }
@@ -76,8 +82,8 @@ public class JsonTaskRepository : ITaskRepository
         try
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
-            string jsonString = JsonSerializer.Serialize(_tasks, options);
-            await File.WriteAllTextAsync(_filePath, jsonString); // 🧠 Asegúrate de usar la variable con guión bajo
+            string jsonString = JsonSerializer.Serialize (_tasks, options);
+            await File.WriteAllTextAsync (_filePath, jsonString); // ⏳ Operación asíncrona
         }
         catch (Exception ex)
         {
