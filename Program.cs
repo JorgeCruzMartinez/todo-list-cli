@@ -1,14 +1,21 @@
 ﻿using Todo_List;
+using Todo_List.Data;
+using Microsoft.EntityFrameworkCore;
 
 class Program
 {
     static async Task Main(string[] args)
     {
-        ITaskRepository repository = new JsonTaskRepository();
+        var options = new DbContextOptionsBuilder<TaskManagerDbContext>()
+            .UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=TodoListDb;Trusted_Connection=True;TrustServerCertificate=True;")
+            .Options;
+
+        using var context = new TaskManagerDbContext(options);
+
+        ITaskRepository repository = new SqlServerTaskRepository(context);
 
         ConsoleUserInterface ui = new(repository);
 
-        // Ejecución asíncrona del menú principal
         await ui.RunAsync();
     }
 }
