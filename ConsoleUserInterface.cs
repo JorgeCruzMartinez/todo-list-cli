@@ -91,8 +91,8 @@ public class ConsoleUserInterface
         if (tasks.Count == 0) return;
 
         var prompt = new SelectionPrompt<TaskItem>()
-              .Title ("Selecciona la tarea para cambiar su estado:")
-              .UseConverter (t => Markup.Escape($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
+              .Title("Selecciona la tarea para cambiar su estado:")
+              .UseConverter (t => $"{t.Id} - {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})");
 
         prompt.AddChoices (tasks);
         var selectedTask = AnsiConsole.Prompt (prompt);
@@ -106,7 +106,7 @@ public class ConsoleUserInterface
 
         var prompt = new SelectionPrompt<TaskItem>()
             .Title("Selecciona la tarea que deseas [red]ELIMINAR[/]:")
-            .UseConverter(t => Markup.Escape($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
+            .UseConverter (t => $"{t.Id} - {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})");
 
         prompt.AddChoices(tasks);
         var selectedTask = AnsiConsole.Prompt(prompt);
@@ -132,7 +132,7 @@ public class ConsoleUserInterface
 
         var prompt = new SelectionPrompt<TaskItem>()
             .Title ("Selecciona la tarea que deseas [blue]RENOMBRAR[/]:")
-            .UseConverter (t => Markup.Escape($"[{t.Id}] {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})"));
+            .UseConverter (t => $"{t.Id} - {t.Title} ({(t.IsCompleted ? "Completada" : "Pendiente")})");
 
         prompt.AddChoices(tasks);
         var selectedTask = AnsiConsole.Prompt (prompt);
