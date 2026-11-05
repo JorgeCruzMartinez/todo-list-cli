@@ -58,6 +58,35 @@ Conseguí que las tareas se conservaran en `tasks.json` y pudieran recuperarse a
 
 **Tecnologías y conceptos:** C#, .NET, `System.Text.Json`, manejo de archivos, serialización, deserialización y manejo de excepciones.
 
+### 2. Eliminación de tareas con confirmación y persistencia
+
+**Commit:** `cfee4d3` – `deleteTask implementado`
+
+**Fecha:** 7 de septiembre de 2026
+
+**S – Situación**
+
+La aplicación permitía agregar y administrar tareas, pero todavía no ofrecía una opción para eliminar aquellas que habían dejado de ser relevantes. Era necesario incorporar esta funcionalidad sin comprometer la información de las demás tareas.
+
+**T – Tarea**
+
+Implementar un mecanismo que permitiera seleccionar y eliminar tareas de manera interactiva, solicitando confirmación antes de ejecutar la operación y conservando los cambios en el archivo JSON.
+
+**A – Acción**
+
+- Incorporé la opción `Eliminar Tarea` al menú principal de la aplicación.
+- Implementé el método `PromptDeleteTask()` en `Program.cs` para mostrar las tareas disponibles mediante `SelectionPrompt<TaskItem>`.
+- Agregué una validación para evitar mostrar el selector cuando no existieran tareas registradas.
+- Implementé una confirmación antes de realizar la eliminación, permitiendo cancelar la operación.
+- Desarrollé el método `DeleteTask(int id)` en `TaskManager`, utilizando `FirstOrDefault()` para localizar la tarea por su identificador.
+- Incorporé la eliminación del elemento mediante `Remove()` y el guardado inmediato de los cambios con `SaveTasksToFile()`.
+
+**R – Resultado**
+
+Conseguí incorporar la eliminación de tareas con confirmación previa y actualización automática del archivo `tasks.json`. Verifiqué que las tareas eliminadas no reaparecieran después de reiniciar la aplicación y que las tareas restantes conservaran sus identificadores. También comprobé que las nuevas tareas recibieran identificadores sin duplicidades.
+
+**Tecnologías y conceptos:** C#, .NET, LINQ, `FirstOrDefault()`, manipulación de colecciones, Spectre.Console, confirmación de operaciones y persistencia mediante JSON.
+
 ---
 
 ## 📦 Instalación y Ejecución
