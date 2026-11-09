@@ -87,6 +87,41 @@ Conseguí incorporar la eliminación de tareas con confirmación previa y actual
 
 **Tecnologías y conceptos:** C#, .NET, LINQ, `FirstOrDefault()`, manipulación de colecciones, Spectre.Console, confirmación de operaciones y persistencia mediante JSON.
 
+### 3. Actualización del título de tareas conservando su identificador
+
+**Commit:** `1fbbbf8` – `feat(todo): añadir funcionalidad para renombrar tareas con valor predeterminado`
+
+**Fecha:** 7 de septiembre de 2026
+
+**S – Situación**
+
+La aplicación permitía agregar, consultar y eliminar tareas, pero todavía no ofrecía una opción para modificar el título de una tarea existente. Cuando el usuario cometía un error al registrarla o necesitaba actualizar su descripción, tenía que eliminarla y crearla nuevamente.
+
+Esta alternativa podía resultar inconveniente en escenarios donde otros registros dependieran del identificador de la tarea, ya que eliminarla y crear otra podría afectar la integridad de las relaciones entre los datos.
+
+**T – Tarea**
+
+Implementar una funcionalidad que permitiera actualizar el título de una tarea existente, conservando su identificador y evitando operaciones innecesarias cuando el usuario decidiera mantener el nombre original.
+
+**A – Acción**
+
+- Incorporé la opción `Renombrar Tarea` al menú principal de la aplicación.
+- Implementé el método `PromptRenameTask()` en `Program.cs` para mostrar las tareas disponibles mediante `SelectionPrompt<TaskItem>`.
+- Agregué una validación para evitar mostrar el selector cuando no existieran tareas registradas.
+- Utilicé `TextPrompt<string>` con `DefaultValue()` para presentar el título actual como valor inicial y facilitar su edición.
+- Incorporé una condición para cancelar la operación cuando el usuario conservara el título original.
+- Desarrollé el método `UpdateTaskTitle(int id, string newTitle)` en `TaskManager`, utilizando `FirstOrDefault()` para localizar la tarea mediante su identificador único.
+- Actualicé exclusivamente la propiedad `Title`, conservando el identificador de la tarea.
+- Incorporé `SaveTasksToFile()` para guardar automáticamente los cambios en el archivo JSON.
+
+**R – Resultado**
+
+Conseguí implementar la actualización de títulos sin necesidad de eliminar y volver a crear tareas. La solución conserva el identificador original de cada registro y evita modificaciones innecesarias cuando el usuario no cambia el título.
+
+Verifiqué que el nuevo título permaneciera guardado en `tasks.json` después de cerrar y reiniciar la aplicación, y que presionar Enter sin modificarlo cancelara la operación.
+
+**Tecnologías y conceptos:** C#, .NET, LINQ, `FirstOrDefault()`, actualización de objetos, identificadores únicos, Spectre.Console y persistencia mediante JSON.
+
 ---
 
 ## 📦 Instalación y Ejecución
@@ -124,8 +159,8 @@ Sigue estos pasos para clonar y ejecutar el proyecto localmente:
 
 ## 📈 Próximas Mejoras (Roadmap)
 
-- [ ] Agregar funcionalidad para eliminar tareas con confirmación del usuario.
-- [ ] Agregar funcionalidad para renombrar tareas con confirmación del usuario.
+- [x] Agregar funcionalidad para eliminar tareas con confirmación del usuario.
+- [x] Agregar funcionalidad para renombrar tareas con confirmación del usuario.
 - [ ] Refactorización aplicando principios SOLID de forma síncrona
 - [ ] Agregar funcionalidad para persistencia asíncrona.
 - [ ] Implementar pruebas unitarias utilizando xUnit.
