@@ -164,25 +164,38 @@ Además, la simplificación del código me permitió identificar nuevas oportuni
 ```bash
 git clone https://github.com/JorgeCruzMartinez/todo-list-cli.git
 cd todo-list-cli
-   """
+```
 
-2. **Restaurar dependencias e instalar Spectre.Console:**
-   """bash
-   dotnet restore
-   """
+### Restaurar dependencias
 
-3. **Ejecutar la aplicación:**
-   """bash
-   dotnet run
-   """
+```bash
+dotnet restore Todo-List.sln
+```
+
+### Ejecutar la aplicación
+
+```bash
+dotnet run --project Todo-List.csproj
+```
+
+### Ejecutar las pruebas unitarias
+
+```bash
+dotnet test Todo-List.sln
+```
 
 ---
 
 ## 📂 Estructura del Código
 
-*   "Program.cs": Controla el flujo principal de la aplicación y renderiza la interfaz visual interactiva.
-*   "TaskManager.cs"": Contiene toda la lógica de negocio, manipulación de listas mediante LINQ y la serialización/deserialización del archivo JSON.
-*   "TaskItem.cs"": Entidad pura de datos que define las propiedades de una tarea (Id, Título, Estado).
+- `Program.cs`: controla el flujo principal de la aplicación y presenta la interfaz interactiva.
+- `TaskManager.cs`: contiene la lógica de negocio y la administración de tareas.
+- `TaskItem.cs`: define la entidad que representa una tarea.
+- `ITaskRepository.cs`: define el contrato para las operaciones de persistencia.
+- `JsonTaskRepository.cs`: implementa la persistencia de tareas mediante JSON.
+- `Data/`: contiene los elementos relacionados con el almacenamiento de datos.
+- `Migrations/`: contiene las migraciones de Entity Framework Core.
+- `Todo_List.Tests/`: contiene las pruebas unitarias del repositorio JSON.
 
 ---
 
