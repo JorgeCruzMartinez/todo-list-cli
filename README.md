@@ -152,7 +152,7 @@ Además, la simplificación del código me permitió identificar nuevas oportuni
 
 ### Hito 5. Implementación de pruebas unitarias con xUnit
 
-**Commit:** `PENDIENTE`
+**Commit:** `cda637f`
 
 **Fecha:** 11 de noviembre de 2026
 
