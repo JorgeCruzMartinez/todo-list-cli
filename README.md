@@ -150,6 +150,45 @@ Verifiqué que las operaciones principales de la aplicación continuaran funcion
 
 Además, la simplificación del código me permitió identificar nuevas oportunidades de mejora en su diseño, motivándome a explorar y aplicar los principios SOLID como siguiente etapa de evolución del proyecto.
 
+### Hito 5. Implementación de pruebas unitarias con xUnit
+
+**Commit:** `PENDIENTE`
+
+**Fecha:** 11 de noviembre de 2026
+
+**Situación (Situation)**
+
+Después de mejorar la estructura y legibilidad del código, identifiqué la necesidad de incorporar pruebas automatizadas que permitieran verificar el comportamiento de las operaciones de persistencia y detectar posibles regresiones ante futuros cambios.
+
+**Tarea (Task)**
+
+Implementar pruebas unitarias para validar el comportamiento de `JsonTaskRepository`, cubriendo operaciones de persistencia, cambios en las tareas y escenarios de error relacionados con identificadores inexistentes.
+
+**Acción (Action)**
+
+- Creé un proyecto independiente de pruebas unitarias denominado `Todo_List.Tests`.
+- Incorporé xUnit como framework de pruebas y FluentAssertions para expresar las verificaciones de manera clara.
+- Implementé los casos de prueba en `JsonTaskRepositoryTests.cs`.
+- Desarrollé seis pruebas que cubren operaciones de persistencia y escenarios negativos:
+  - Agregar una tarea y verificar su almacenamiento en un archivo JSON.
+  - Cambiar el estado de una tarea.
+  - Eliminar una tarea existente.
+  - Verificar el comportamiento ante un identificador inexistente al cambiar el estado.
+  - Verificar que un identificador inexistente no provoque la eliminación de otra tarea.
+  - Comprobar que un identificador inexistente no modifique el título de una tarea.
+- Implementé `IDisposable` para eliminar los archivos JSON temporales utilizados durante las pruebas.
+- Integré el proyecto de pruebas en la solución `Todo-List.sln`.
+- Ejecuté las pruebas desde la terminal mediante `dotnet test Todo-List.sln`.
+- Verifiqué también su ejecución desde el Explorador de pruebas de Visual Studio.
+
+**Resultado (Result)**
+
+Conseguí implementar y ejecutar correctamente seis pruebas unitarias, todas aprobadas y sin fallos.
+
+Las pruebas permiten verificar el comportamiento de las operaciones de persistencia, comprobar escenarios negativos y reducir el riesgo de regresiones durante futuras modificaciones del código.
+
+**Tecnologías y conceptos:** C#, .NET 8, xUnit, FluentAssertions, pruebas unitarias, operaciones CRUD, programación asíncrona, persistencia JSON y Visual Studio.
+
 ---
 
 ## 📦 Instalación y ejecución
@@ -205,5 +244,5 @@ dotnet test Todo-List.sln
 - [x] Agregar funcionalidad para renombrar tareas con confirmación del usuario.
 - [ ] Refactorización aplicando principios SOLID de forma síncrona
 - [ ] Agregar funcionalidad para persistencia asíncrona.
-- [ ] Implementar pruebas unitarias utilizando xUnit.
+- [x] Implementar pruebas unitarias utilizando xUnit.
 - [ ] Migrar el almacenamiento local de JSON a una base de datos con SQL Server y EF Core.
