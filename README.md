@@ -152,17 +152,18 @@ Además, la simplificación del código me permitió identificar nuevas oportuni
 
 ---
 
-## 📦 Instalación y Ejecución
+## 📦 Instalación y ejecución
 
-## Prerrequisitos
-* Tener instalado [Idioma/Entorno, ej: Node.js / Python / .NET]
+### Prerrequisitos
 
-Sigue estos pasos para clonar y ejecutar el proyecto localmente:
+- .NET 8 SDK
+- Git
 
-1. **Clonar el repositorio:**
-   """bash
-   git clone https://github.com
-   cd TU_REPOSITORIO
+### Clonar el repositorio
+
+```bash
+git clone https://github.com/JorgeCruzMartinez/todo-list-cli.git
+cd todo-list-cli
    """
 
 2. **Restaurar dependencias e instalar Spectre.Console:**
