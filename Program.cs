@@ -10,11 +10,13 @@ class Program
             .UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=TodoListDb;Trusted_Connection=True;TrustServerCertificate=True;")
             .Options;
 
-        using var context = new TaskManagerDbContext(options);
+        using var context = new TaskManagerDbContext (options);
 
         ITaskRepository repository = new SqlServerTaskRepository(context);
 
-        ConsoleUserInterface ui = new(repository);
+        TaskService taskService = new TaskService(repository);
+
+        ConsoleUserInterface ui = new ConsoleUserInterface(taskService);
 
         await ui.RunAsync();
     }

@@ -2,14 +2,13 @@
 
 
 namespace Todo_List;
-
 public class ConsoleUserInterface
 {
-    private readonly ITaskRepository _repository;
+    private readonly TaskService _taskService;
 
-    public ConsoleUserInterface (ITaskRepository repository)
+    public ConsoleUserInterface(TaskService taskService)
     {
-        _repository = repository;
+        _taskService = taskService;
     }
 
     public async Task RunAsync()
@@ -36,7 +35,7 @@ public class ConsoleUserInterface
             {
                 case "Agregar Tarea":
                     var title = AnsiConsole.Ask<string> ("Escribe el título de la tarea:");
-                    if (!string.IsNullOrWhiteSpace(title)) await _repository.AddTaskAsync (title);
+                    if (!string.IsNullOrWhiteSpace(title)) await _taskService.AddTaskAsync (title);
                     break;
 
                 case "Cambiar Estado (Completar/Pendiente)":
@@ -62,7 +61,7 @@ public class ConsoleUserInterface
 
     private async Task ShowTasksTableAsync()
     {
-        var tasks = await _repository.GetAllTasksAsync();
+        var tasks = await _taskService.GetAllTasksAsync();
 
         if (tasks.Count == 0)
         {
@@ -87,7 +86,7 @@ public class ConsoleUserInterface
 
     private async Task PromptToggleTaskAsync()
     {
-        var tasks = await _repository.GetAllTasksAsync();
+        var tasks = await _taskService.GetAllTasksAsync();
         if (tasks.Count == 0) return;
 
         var prompt = new SelectionPrompt<TaskItem>()
@@ -96,12 +95,12 @@ public class ConsoleUserInterface
 
         prompt.AddChoices (tasks);
         var selectedTask = AnsiConsole.Prompt (prompt);
-        await _repository.ToggleTaskStatusAsync (selectedTask.Id);
+        await _taskService.ToggleTaskStatusAsync (selectedTask.Id);
     }
 
     private async Task PromptDeleteTaskAsync()
     {
-        var tasks = await _repository.GetAllTasksAsync();
+        var tasks = await _taskService.GetAllTasksAsync();
         if (tasks.Count == 0) return;
 
         var prompt = new SelectionPrompt<TaskItem>()
@@ -115,7 +114,7 @@ public class ConsoleUserInterface
 
         if (confirm)
         {
-            await _repository.DeleteTaskAsync (selectedTask.Id);
+            await _taskService.DeleteTaskAsync (selectedTask.Id);
             AnsiConsole.MarkupLine ("[green]✔ Tarea eliminada correctamente.[/]");
         }
         else
@@ -127,7 +126,7 @@ public class ConsoleUserInterface
 
     private async Task PromptRenameTaskAsync()
     {
-        var tasks = await _repository.GetAllTasksAsync();
+        var tasks = await _taskService.GetAllTasksAsync();
         if (tasks.Count == 0) return;
 
         var prompt = new SelectionPrompt<TaskItem>()
@@ -141,7 +140,7 @@ public class ConsoleUserInterface
 
         if (!string.IsNullOrWhiteSpace (newTitle))
         {
-            await _repository.UpdateTaskTitleAsync (selectedTask.Id, newTitle);
+            await _taskService.UpdateTaskTitleAsync (selectedTask.Id, newTitle);
             AnsiConsole.MarkupLine ("[green]✔ Tarea renombrada correctamente.[/]");
         }
         else        
